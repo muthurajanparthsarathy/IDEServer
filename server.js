@@ -1,8 +1,8 @@
-const express = require("express");
-const { exec } = require("child_process");
-const fs = require("fs");
-const os = require("os");
-const path = require("path");
+import express from "express";
+import { exec } from "child_process";
+import fs from "fs";
+import os from "os";
+import path from "path";
 
 const app = express();
 app.use(express.json({ limit: "1mb" }));
@@ -20,14 +20,11 @@ app.post("/run", async (req, res) => {
 
         let pythonCode = code;
 
-        // If action is test, wrap code with test runner
         if (action === "test" && Array.isArray(testCases) && testCases.length > 0) {
             pythonCode = generateTestCode(code, testCases);
         }
 
         fs.writeFileSync(filePath, pythonCode);
-
-        const cmd = `python3 ${filePath}`;
 
         exec(`python3 ${filePath}`, { timeout: 10000 }, (err, stdout, stderr) => {
             let output = (stdout || "") + (stderr || "");
@@ -37,7 +34,6 @@ app.post("/run", async (req, res) => {
                 try {
                     const results = parseTestResults(output);
                     const passedCount = results.filter(r => r.passed).length;
-
                     return res.json({
                         success: true,
                         output: output.trim(),
@@ -88,7 +84,6 @@ def safe_eval(expr):
 ${testCases.map(tc => {
         if (tc.input === "print_output") {
             return `
-# Test: print output
 out, err = run_user_code("""${userCode.replace(/"/g, '\\"').replace(/\n/g, "\\n")}""")
 results.append({
   "input": "print_output",
@@ -100,7 +95,6 @@ results.append({
 `;
         }
         return `
-# Test: ${tc.input}
 out, err = safe_eval("${tc.input}")
 results.append({
   "input": "${tc.input}",
