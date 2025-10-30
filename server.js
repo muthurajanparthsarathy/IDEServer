@@ -13,7 +13,7 @@ app.use(
     credentials: true,
     exposedHeaders: ["Content-Length", "Authorization"],
   })
-
+);
 app.post("/run", async (req, res) => {
     try {
         const { code, testCases, action } = req.body;
