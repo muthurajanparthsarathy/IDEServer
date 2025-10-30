@@ -3,6 +3,7 @@ import { exec } from "child_process";
 import fs from "fs";
 import os from "os";
 import path from "path";
+import cors from "cors";
 
 const app = express();
 app.use(express.json({ limit: "1mb" }));
