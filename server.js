@@ -6,6 +6,13 @@ import path from "path";
 
 const app = express();
 app.use(express.json({ limit: "1mb" }));
+app.use(
+  cors({
+    origin: ["https://ide-client-9qj7.vercel.app/"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+    exposedHeaders: ["Content-Length", "Authorization"],
+  })
 
 app.post("/run", async (req, res) => {
     try {
